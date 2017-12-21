@@ -2,7 +2,7 @@
 using UnityEngine;
 public class BuffGameObject : MonoBehaviour{
 
-	public Buff buff;
+	[SerializeField] private Buff buff;
 
 	private void Update(){
 		transform.Translate(Vector3.down * Time.deltaTime * 2f);

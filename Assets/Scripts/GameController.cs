@@ -7,38 +7,41 @@ public class GameController : MonoBehaviour{
 
 	public static GameController instance = null;
 
+	[SerializeField] private Text scor;
+	private int score = 0;
+	public int Score{
+		get{ return score; }
+		set{
+			score = value;
+			scor.text = "Score " + score;
+		}
+	}
+
+	[SerializeField] private Text heal;
+	public int health = 5;
+	public int Health{
+		get{ return health; }
+		set{
+			health = value;
+			heal.text = new string('♥', health);
+		}
+	}
+	
+	
+
+	[SerializeField] private RectTransform los;
+	[SerializeField] private RectTransform win;
+	[SerializeField] private RectTransform gam;
+	private RectTransform currentRect;
+	private RectTransform previousRect;
+	
 	private void Awake(){
 		instance = FindObjectOfType<GameController>() ?? new GameObject().AddComponent<GameController>();
 	}
-
-	public int health = 5;
-	public int score = 0;
-
-	public Text heal;
-	public Text scor;
-
-	public bool LostBall(){
-		health--;
-		heal.text = new string('♥', health);
-		return health == 0;
-	}
-
-	public void IncScore(){
-		score++;
-		scor.text = "Score " + score;
-
-	}
-
-	public RectTransform los;
-	public RectTransform win;
-	public RectTransform gam;
-
+	
 	public enum GameStatus{
 		WIN, LOSE, GAME
 	}
-
-	private RectTransform currentRect;
-	private RectTransform previousRect;
 	
 	public void SetState(GameStatus stat){
 		previousRect = currentRect;

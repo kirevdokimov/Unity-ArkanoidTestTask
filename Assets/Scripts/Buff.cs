@@ -9,7 +9,7 @@ public class Buff{
 		SIZE_INCREASE,SIZE_DECREASE
 	}
 
-	public Type type;
+	[SerializeField] private Type type;
 
 	public Buff(float expTime,Type t){
 		expirationTime = Mathf.Clamp(expTime,0,float.MaxValue);

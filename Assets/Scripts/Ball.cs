@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour{
 
+	[SerializeField] private Transform playerTransform;
 	public float speed;
 	
 	Rigidbody2D rig;
@@ -28,8 +29,6 @@ public class Ball : MonoBehaviour{
 		transform.position = playerTransform.position + Vector3.up * 0.8f;
 	}
 
-	[SerializeField]
-	private Transform playerTransform;
 
 	public bool readyToPush{ get; private set; }
 
@@ -47,16 +46,20 @@ public class Ball : MonoBehaviour{
 	}
 
 	private Vector2 GetRandomPushVector(){
-		return Quaternion.AngleAxis(Random.Range(30f,150f), Vector3.forward) * Vector2.right;
+		var v = Quaternion.AngleAxis(Random.Range(30f, 150f), Vector3.forward) * Vector2.right;
+		return v.normalized;
 	}
 
 	private void OnCollisionEnter2D (Collision2D c) {
 		var cp = c.contacts[0];
+		// Считаем отражение
 		var newVelo = Vector2.Reflect(oldVel,cp.normal).normalized;
 
 		if (c.gameObject.CompareTag("Player")){
 			var plpos = c.gameObject.GetComponent<Transform>().position;
+			// При контакте с битой считаем нсколько близко к краю произошло касание
 			var deltaX = transform.position.x - plpos.x;
+			// Корректируем движение шара
 			newVelo += Vector2.right*0.5f*deltaX;
 		}
 
@@ -69,8 +72,8 @@ public class Ball : MonoBehaviour{
 
 	private void OnTriggerEnter2D(Collider2D other){
 		if (other.gameObject.CompareTag("Deadzone")){
-			//UiController.instance.SetState(UiController.GameStatus.LOSE);
-			if (GameController.instance.LostBall()){
+			GameController.instance.Health--;
+			if(GameController.instance.Health == 0){
 				GameController.instance.SetState(GameController.GameStatus.LOSE);
 			} else{
 				Spawn();

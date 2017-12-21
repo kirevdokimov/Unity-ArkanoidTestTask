@@ -5,23 +5,17 @@ using UnityEngine;
 public class Block : MonoBehaviour{
 
 
-	public GameObject goodBuff;
-	public GameObject badBuff;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	[SerializeField] private GameObject goodBuff;
+	[SerializeField] private GameObject badBuff;
 
 	public void Shot(){
-		GameController.instance.IncScore();
+		GameController.instance.Score++;
+		
 		if (transform.parent.childCount <= 1){
 			GameController.instance.SetState(GameController.GameStatus.WIN);
 		}
+		
+		// Шанс 2/6, что выпадет бонус
 		var n = Random.Range(0, 7);
 		switch (n){
 			case 0: Instantiate(goodBuff, transform.position, Quaternion.identity);
@@ -29,6 +23,6 @@ public class Block : MonoBehaviour{
 			case 1: Instantiate(badBuff, transform.position, Quaternion.identity);
 				break;
 		}
-		Destroy(this.gameObject);
+		Destroy(gameObject);
 	}
 }

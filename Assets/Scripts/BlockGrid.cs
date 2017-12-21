@@ -4,21 +4,16 @@ using UnityEngine;
 
 public class BlockGrid : MonoBehaviour{
 
-	public GameObject prefab;
+	[SerializeField] private GameObject prefab;
 
 	public int w, h;
 	
 	// Use this for initialization
 	void Start () {
-		for (int i = -w; i < w; i++){
-			for (int j = -h; j < h; j++){
-				Instantiate(prefab, transform.position + Vector3.right*i*1.2f + Vector3.down*j, Quaternion.identity, this.transform);
+		for (var i = -w; i < w; i++){
+			for (var j = -h; j < h; j++){
+				Instantiate(prefab, transform.position + Vector3.right*i*1.2f + Vector3.down*j, Quaternion.identity, transform);
 			}
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }
