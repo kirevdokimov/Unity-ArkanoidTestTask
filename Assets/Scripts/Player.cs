@@ -31,7 +31,7 @@ public class Player : MonoBehaviour{
 
 	private void Update(){
 
-		if (ball.readyToPush && Input.GetKeyDown(KeyCode.Space)){
+		if (Input.GetKeyDown(KeyCode.Space)){
 			PushBall();
 		}
 

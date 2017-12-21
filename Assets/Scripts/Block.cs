@@ -15,6 +15,10 @@ public class Block : MonoBehaviour {
 	}
 
 	public void Shot(){
+		GameController.instance.IncScore();
+		if (transform.parent.childCount == 1){
+			GameController.instance.SetState(GameController.GameStatus.WIN);
+		}
 		Destroy(this.gameObject);
 	}
 }

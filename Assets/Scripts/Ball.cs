@@ -32,8 +32,10 @@ public class Ball : MonoBehaviour{
 	}
 
 	public void Push(){
+		if(!readyToPush) return;
 		transform.parent = null;
 		rig.velocity = GetRandomPushVector() * speed;
+		readyToPush = false;
 	}
 
 	private Vector2 GetRandomPushVector(){
@@ -42,7 +44,8 @@ public class Ball : MonoBehaviour{
 
 	private void OnCollisionEnter2D (Collision2D c) {
 		var cp = c.contacts[0];
-		rig.velocity = Vector2.Reflect(oldVel,cp.normal);
+		rig.velocity = Vector2.Reflect(oldVel,cp.normal).normalized*speed;
+		
 		
 		if (c.gameObject.CompareTag("Block")){
 			c.gameObject.GetComponent<Block>().Shot();
@@ -51,8 +54,12 @@ public class Ball : MonoBehaviour{
 
 	private void OnTriggerEnter2D(Collider2D other){
 		if (other.gameObject.CompareTag("Deadzone")){
-			UiController.instance.SetState(UiController.GameStatus.LOSE);
-			Spawn();
+			//UiController.instance.SetState(UiController.GameStatus.LOSE);
+			if (GameController.instance.LostBall()){
+				GameController.instance.SetState(GameController.GameStatus.LOSE);
+			} else{
+				Spawn();
+			}
 		}
 	}
 }
