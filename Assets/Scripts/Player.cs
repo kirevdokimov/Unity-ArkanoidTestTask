@@ -15,7 +15,6 @@ public class Player : MonoBehaviour{
 	[SerializeField] private float moveRange;
 	
 	private float size;
-	
 	public float Size{
 		get{ return size; }
 		set{
@@ -28,7 +27,14 @@ public class Player : MonoBehaviour{
 		Size = startSize;
 	}
 
+	public Ball ball;
+
 	private void Update(){
+
+		if (ball.readyToPush && Input.GetKeyDown(KeyCode.Space)){
+			PushBall();
+		}
+
 		Movement();
 		Clamp();
 	}
@@ -42,6 +48,10 @@ public class Player : MonoBehaviour{
 		var pos = transform.position;
 		pos.x =  Mathf.Clamp(transform.position.x, -moveRange+(Size/2), moveRange-(Size/2));
 		transform.position = pos;
+	}
+
+	private void PushBall(){
+		ball.Push();
 	}
 
 	private void OnDrawGizmosSelected(){
