@@ -17,16 +17,24 @@ public class Ball : MonoBehaviour{
 	void FixedUpdate() {
 		oldVel = rig.velocity;
 	}
-	
-	
+
+	void Update(){
+		if (!readyToPush) return;
+		AlignWithPlayer();
+	}
+
+
+	public void AlignWithPlayer(){
+		transform.position = playerTransform.position + Vector3.up * 0.8f;
+	}
+
 	[SerializeField]
 	private Transform playerTransform;
 
 	public bool readyToPush{ get; private set; }
 
 	private void Spawn(){
-		transform.position = playerTransform.position + Vector3.up * 0.8f;
-		transform.parent = playerTransform;
+		AlignWithPlayer();
 		rig.velocity = Vector2.zero;
 		readyToPush = true;
 	}
@@ -44,9 +52,16 @@ public class Ball : MonoBehaviour{
 
 	private void OnCollisionEnter2D (Collision2D c) {
 		var cp = c.contacts[0];
-		rig.velocity = Vector2.Reflect(oldVel,cp.normal).normalized*speed;
-		
-		
+		var newVelo = Vector2.Reflect(oldVel,cp.normal).normalized;
+
+		if (c.gameObject.CompareTag("Player")){
+			var plpos = c.gameObject.GetComponent<Transform>().position;
+			var deltaX = transform.position.x - plpos.x;
+			newVelo += Vector2.right*0.5f*deltaX;
+		}
+
+		rig.velocity = newVelo.normalized * speed;
+
 		if (c.gameObject.CompareTag("Block")){
 			c.gameObject.GetComponent<Block>().Shot();
 		}

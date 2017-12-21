@@ -6,9 +6,8 @@ using UnityEditorInternal;
 using UnityEngine;
 
 public class Player : MonoBehaviour{
-
-	
-	[SerializeField, Range(3,15)] private float startSize;
+		
+	[SerializeField, Range(1,15)] private float startSize;
 
 	public float speed;
 
@@ -18,8 +17,8 @@ public class Player : MonoBehaviour{
 	public float Size{
 		get{ return size; }
 		set{
-			size = Mathf.Clamp(value, 3, moveRange*2);
-			transform.localScale = new Vector3(size,1,1);
+			size = Mathf.Clamp(value, 1, moveRange*2);
+			transform.localScale = new Vector3(size,transform.localScale.y,transform.localScale.z);
 		}
 	}
 
@@ -28,7 +27,7 @@ public class Player : MonoBehaviour{
 	}
 
 	public Ball ball;
-
+	private Buff buff;
 	private void Update(){
 
 		if (Input.GetKeyDown(KeyCode.Space)){
@@ -37,6 +36,22 @@ public class Player : MonoBehaviour{
 
 		Movement();
 		Clamp();
+		
+		if (buff != null){
+			if (buff.Dissolve(Time.deltaTime)){
+				DismissBuff();
+			}
+		}
+	}
+
+	public void ApplyBuff(Buff b){
+		buff = b;
+		buff.Do(this);
+	}
+
+	public void DismissBuff(){
+		buff.Undo(this);
+		buff = null;
 	}
 
 	private void Movement(){
@@ -63,5 +78,13 @@ public class Player : MonoBehaviour{
 	private void OnValidate(){
 		moveRange = moveRange < 0 ? 0 : moveRange;
 		Size = startSize;
+	}
+
+	private void OnTriggerEnter2D(Collider2D other){
+		if(other.gameObject.CompareTag("BuffObject")){
+			Buff b;
+			other.gameObject.GetComponent<BuffGameObject>().ExtractTo(out b);
+			ApplyBuff(b);
+		}
 	}
 }
