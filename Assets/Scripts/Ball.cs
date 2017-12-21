@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour{
 
-	public float speed = 2;
+	public float speed;
 	
 	Rigidbody2D rig;
 	Vector2 oldVel;
@@ -51,6 +51,7 @@ public class Ball : MonoBehaviour{
 
 	private void OnTriggerEnter2D(Collider2D other){
 		if (other.gameObject.CompareTag("Deadzone")){
+			UiController.instance.SetState(UiController.GameStatus.LOSE);
 			Spawn();
 		}
 	}
